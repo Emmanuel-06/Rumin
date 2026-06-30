@@ -1,7 +1,9 @@
 package com.example.rumin
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.rumin.ui.presentation.screens.Home
+import com.example.rumin.ui.presentation.screens.VerseApp
 import com.example.rumin.ui.theme.RuminTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,16 +25,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RuminTheme {
-            }
+//            VerseApp()
+            Home()
+
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RuminTheme {
     }
 }
