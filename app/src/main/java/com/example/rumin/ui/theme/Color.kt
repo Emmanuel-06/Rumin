@@ -12,7 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 
 //custom colors
-val Yellow600 = Color(0xFFD78D12)
+val Yellow600 = Color(0xFFC58D30)
 val Yellow500 = Color(0xFFE8A020)
 val Yellow300 = Color(0xFFFEF3E2)
 val Yellow250 = Color(0xFFE9E4D5)
