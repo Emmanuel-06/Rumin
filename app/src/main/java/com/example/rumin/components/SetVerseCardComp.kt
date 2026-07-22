@@ -1,5 +1,7 @@
 package com.example.rumin.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,12 +18,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.rumin.data.model.Verse
 import com.example.rumin.ui.theme.Black
 import com.example.rumin.ui.theme.Grey100
 import com.example.rumin.ui.theme.Grey200
@@ -37,10 +44,18 @@ fun SetVerseCardComp(
     isSet: Boolean,
     onIsSetChanged: (String) -> Unit,
 ) {
+
+    val borderColor by animateColorAsState(
+        targetValue = if (isSet) Yellow600 else Color.Transparent,
+        label = "color"
+    )
+
+
     Card(
-        shape = RoundedCornerShape(14),
-        colors = if (isSet) CardDefaults.cardColors(Yellow600.copy(0.05f)) else CardDefaults.cardColors(Color.White),
-        border = if(isSet) BorderStroke(1.dp, Yellow600) else BorderStroke(1.dp, Yellow250),
+        shape = RoundedCornerShape(10),
+        colors = if(isSet) CardDefaults.cardColors(Yellow600.copy(0.05f)) else CardDefaults.cardColors(
+            Color.White),
+        border = if(isSet) BorderStroke(1.dp, borderColor) else BorderStroke(0.dp, borderColor),
         onClick = {}
     ) {
             Column(
@@ -51,7 +66,6 @@ fun SetVerseCardComp(
                 Text(
                     text = bibleText,
                     color = Black,
-                    fontFamily = overusedGroteskFontFamily,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -59,15 +73,17 @@ fun SetVerseCardComp(
                 Text(
                     text = "\"" + bibleVerse + "\"" ,
                     color = Grey500,
-                    fontFamily = overusedGroteskFontFamily,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.Normal,
                 )
 
                 Row(
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().align(Alignment.End)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.End)
                 ){
                     Button(
                         onClick = {
@@ -80,7 +96,6 @@ fun SetVerseCardComp(
                         Text(
                             text = if(isSet) "Verse Set" else "Set for today",
                             color = if(isSet) Color.White else Black,
-                            fontFamily = overusedGroteskFontFamily,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                         )

@@ -1,9 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
+    val localProperties = Properties()
+
     namespace = "com.example.rumin"
     compileSdk = 34
 
@@ -18,6 +24,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField(
+            type = "String",
+            name = "MY_API_KEY",
+            value = "\"${localProperties.getProperty("MY_API_KEY", "")}\""
+        )
     }
 
     buildTypes {
@@ -37,7 +49,9 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
+
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -50,6 +64,33 @@ android {
 }
 
 dependencies {
+
+    val navVersion = "2.8.5"
+    val retrofitVersion = "2.10.0"
+    val daggerHiltVersion = "2.51.1"
+
+
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+
+    //jsoup
+    implementation ("org.jsoup:jsoup:1.22.2")
+
+    //navigation
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    //dagger-hilt
+    implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
+    ksp("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+
 
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.5")
