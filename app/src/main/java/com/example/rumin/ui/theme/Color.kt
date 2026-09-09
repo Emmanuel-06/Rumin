@@ -15,8 +15,8 @@ val Pink40 = Color(0xFF7D5260)
 
 val Sage = Color(0xFF7C8A6B)
 
-val Yellow600 = Color(0xFFC58D30)
-val Yellow500 = Color(0xFFE8A020)
+val Yellow600 = Color(0xFFA2770A)
+val Yellow500 = Color(0xFFE2A710)
 val Yellow300 = Color(0xFFFEF3E2)
 val Yellow250 = Color(0xFFE9E4D5)
 val Yellow200 = Color(0xFFFAF7F0)

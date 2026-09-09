@@ -7,6 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -14,6 +16,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MediumTopAppBar
@@ -29,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,9 +42,13 @@ import androidx.compose.ui.unit.sp
 import com.example.rumin.components.TimeCardComp
 import com.example.rumin.components.TimePickerModalComp
 import com.example.rumin.ui.theme.Black
+import com.example.rumin.ui.theme.Grey100
+import com.example.rumin.ui.theme.Grey200
+import com.example.rumin.ui.theme.Grey400
 import com.example.rumin.ui.theme.Grey500
 import com.example.rumin.ui.theme.Yellow200
 import com.example.rumin.ui.theme.Yellow600
+import com.example.rumin.ui.theme.sfRoundedFontFamily
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -54,7 +64,6 @@ fun RemindersScreen() {
         "2:00pm"
     )
     }
-
     var showTimePickerModal by remember{
         mutableStateOf(false)
     }
@@ -64,21 +73,22 @@ fun RemindersScreen() {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier
-            .statusBarsPadding()
-            .background(Yellow200)
+            .background(Black.copy(0.02f))
             .verticalScroll(
                 scrollable
             )
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
-                text = "TIMES",
+                text = "YOUR REMINDERS",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Grey500,
-                letterSpacing = 0.02.sp
+                fontFamily = sfRoundedFontFamily,
+                color = Grey400,
+                letterSpacing = 0.7.sp
             )
 
             times.forEachIndexed { index, time ->
@@ -90,23 +100,27 @@ fun RemindersScreen() {
                 }
             }
 
-            TextButton(
+            Button(
                 onClick = {
                     showTimePickerModal = true
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Black,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier.height(52.dp).fillMaxWidth()
             ) {
                 Icon(
-                    imageVector = Icons.Default.Add,
+                    imageVector = Icons.Rounded.Add,
                     contentDescription = "add",
-                    tint = Yellow600,
                     modifier = Modifier.size(24.dp)
                 )
 
                 Text(
                     text = "Add another time",
                     fontSize = 16.sp,
+                    fontFamily = sfRoundedFontFamily,
                     fontWeight = FontWeight.SemiBold,
-                    color = Yellow600
                     )
             }
 
@@ -142,12 +156,15 @@ fun ReminderTopAppBar() {
                 Text(
                     text = "Reminders",
                     fontSize = 24.sp,
+                    fontFamily = sfRoundedFontFamily,
                     fontWeight = FontWeight.SemiBold,
                     color = Black
                 )
                 Text(
-                    text = "Choose how often you'd like to be called back to stillness today.",
+                    text = "Choose when your verse arrives",
                     fontSize = 16.sp,
+                    fontFamily = sfRoundedFontFamily,
+                    fontWeight = FontWeight.Medium,
                     lineHeight = 16.sp,
                     color = Grey500,
                 )
@@ -162,12 +179,14 @@ fun ReminderTopAppBar() {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun RemindersPreview() {
     Column(
         modifier = Modifier.fillMaxSize()
     ){
-//        RemindersScreen()
+        ReminderTopAppBar()
+        RemindersScreen()
     }
 }

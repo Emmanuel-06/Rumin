@@ -2,6 +2,7 @@ package com.example.rumin.utils
 
 import com.example.rumin.BuildConfig
 
+
 object Constants {
     const val BASE_URL = "https://rest.api.bible/v1/"
     const val API_KEY = BuildConfig.MY_API_KEY

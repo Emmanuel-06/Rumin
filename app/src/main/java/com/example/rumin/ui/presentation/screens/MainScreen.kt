@@ -2,11 +2,10 @@ package com.example.rumin.ui.presentation.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -27,19 +26,21 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.rumin.ui.presentation.viewmodel.RuminViewModel
+import com.example.rumin.ui.presentation.viewmodel.VerseViewModel
 import com.example.rumin.utils.navbarItems
 import com.example.rumin.ui.theme.Black
+import com.example.rumin.ui.theme.Grey100
 import com.example.rumin.ui.theme.Grey200
 import com.example.rumin.ui.theme.Grey400
 import com.example.rumin.ui.theme.Yellow200
 
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
     navController: NavController,
-    ruminViewModel: RuminViewModel
+    verseViewModel: VerseViewModel
 ) {
     var selected by remember { mutableStateOf(0) }
 
@@ -48,6 +49,7 @@ fun MainScreen(
             when(selected){
                 0 -> HomeScreenTopAppBar()
                 1 -> ReminderTopAppBar()
+                2 -> ProfileScreenTopAppBar()
             }
         },
         bottomBar = {
@@ -64,7 +66,7 @@ fun MainScreen(
                             strokeWidth = strokeWidth
                         )
                     },
-                containerColor = Yellow200,
+                containerColor = Grey100,
             ) {
                 navbarItems.forEachIndexed { index, navbarItems ->
                     val isSelected = selected == index
@@ -99,7 +101,6 @@ fun MainScreen(
             }
         },
         containerColor = Yellow200,
-//        modifier = Modifier.statusBarsPadding()
     ) {
         Column(
             modifier = Modifier
@@ -108,17 +109,18 @@ fun MainScreen(
         ) {
             ScreenContainer(
                 index = selected,
-                viewModel = ruminViewModel
+                viewModel = verseViewModel
             )
         }
     }
 }
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ScreenContainer(
     index: Int,
-    viewModel: RuminViewModel
+    viewModel: VerseViewModel
 ) {
     when(index){
         0 -> HomeScreen(viewModel)

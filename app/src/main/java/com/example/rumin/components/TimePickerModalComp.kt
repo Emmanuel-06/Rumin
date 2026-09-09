@@ -74,9 +74,8 @@ fun TimePickerModalComp(
             Text(
                 text = "We'll send you a gentle nudge, at this time everyday",
                 color = Grey500,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp
             )
 
             MaterialTheme(
@@ -84,6 +83,11 @@ fun TimePickerModalComp(
                     outline = Grey400,
                     primary = Yellow600,
                     onSurfaceVariant = Grey500
+                ),
+                typography = MaterialTheme.typography.copy(
+                    displayMedium = MaterialTheme.typography.displayMedium,
+                    bodySmall = MaterialTheme.typography.labelSmall,
+                    labelLarge = MaterialTheme.typography.labelSmall
                 )
             ) {
                 TimeInput(
@@ -131,7 +135,7 @@ fun TimePickerDialog(
             ) {
                 Text(
                     text = "Add time",
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         },
@@ -147,15 +151,14 @@ fun TimePickerDialog(
             ) {
                 Text(
                     text = "Cancel",
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         },
         title = {
             Text(
                 text = "Add a reminder time",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodyLarge,
                 color = Black
             )
         },

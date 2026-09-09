@@ -1,3 +1,4 @@
+import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -8,7 +9,12 @@ plugins {
 }
 
 android {
-    val localProperties = Properties()
+    val localProperties = Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if(localPropertiesFile.exists()){
+            load(FileInputStream(localPropertiesFile))
+        }
+    }
 
     namespace = "com.example.rumin"
     compileSdk = 34
@@ -68,6 +74,7 @@ dependencies {
     val navVersion = "2.8.5"
     val retrofitVersion = "2.10.0"
     val daggerHiltVersion = "2.51.1"
+    val roomVersion = "2.6.0"
 
 
     //retrofit
@@ -79,17 +86,31 @@ dependencies {
 
     //navigation
     implementation("androidx.navigation:navigation-compose:$navVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    //room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
     //dagger-hilt
     implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
     ksp("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
     ksp("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.hilt:hilt-common:1.4.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
 
     //coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
+
+    //workmanager
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    //datastore
+    implementation("androidx.datastore:datastore-preferences:1.2.1")
 
 
     implementation("androidx.core:core-ktx:1.10.0")
