@@ -1,25 +1,23 @@
 package com.example.rumin.ui.presentation.screens
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
+import android.icu.text.SimpleDateFormat
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,10 +34,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,65 +45,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.rumin.R
-import com.example.rumin.data.api.VerseApiService
-import com.example.rumin.data.model.Verse
-import com.example.rumin.ui.presentation.viewmodel.RuminViewModel
+import com.example.rumin.ui.presentation.viewmodel.VerseViewModel
 import com.example.rumin.ui.theme.Black
 import com.example.rumin.ui.theme.Grey100
 import com.example.rumin.ui.theme.Grey200
 import com.example.rumin.ui.theme.Grey400
 import com.example.rumin.ui.theme.Grey500
 import com.example.rumin.ui.theme.Yellow200
-import com.example.rumin.ui.theme.Yellow250
 import com.example.rumin.ui.theme.Yellow500
 import com.example.rumin.ui.theme.Yellow600
-import com.example.rumin.utils.RuminUiState
-import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
-import java.lang.Math.abs
-import kotlin.math.roundToInt
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
+
+@RequiresApi(Build.VERSION_CODES.O)
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    ruminViewModel: RuminViewModel
+    verseViewModel: VerseViewModel
 ) {
 
-    val suggestedVerse = ruminViewModel.suggestedVerses.collectAsState().value
+//    val suggestedVerse = ruminViewModel.suggestedVerses.collectAsState().value
 
-    val selectedBibleVerse = ruminViewModel.selectedVerse.collectAsState().value
+//    val selectedBibleVerse = ruminViewModel.selectedVerse.collectAsState().value
 
-    val verse = ruminViewModel.verse.collectAsState().value
+    val verse = verseViewModel.verseOfTheDay.collectAsState().value
 
-
-
-//    var verses by remember {
-//        mutableStateOf(
-//            listOf(
-//                "and raised us up together, and made us sit together in the heavenly places in Christ Jesus" to "Ephesians 2: 6",
-//                "I will both lie down in peace, and sleep; For You alone, O Lord, make me dwell in safety." to "Psalm 4:8",
-//                "Trust in the Lord with all your heart, and lean not on your own understanding" to "Proverbs 3: 5",
-//                "He has delivered us from the power of darkness and conveyed us into the kingdom of the Son of His love" to "Colossians 1:13",
-//            )
-//        )
-//    }
-//
-//    val animatedOffsetX = remember {
-//        Animatable(0f)
-//    }
 
     val scope = rememberCoroutineScope()
-//    val visibleCards = verses.take(2)
 
     var showBottomSheetState by remember {
         mutableStateOf(false)
@@ -117,13 +92,6 @@ fun HomeScreen(
         skipPartiallyExpanded = true
     )
 
-    LaunchedEffect(key1 = Unit){
-        ruminViewModel.getVerse("JHN.1.1")
-    }
-
-    LaunchedEffect(key1 = bottomSheetState){
-        ruminViewModel.getSuggestedVerses()
-    }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -132,187 +100,48 @@ fun HomeScreen(
     ) {
 
     }
-        when(verse){
-            is RuminUiState.Error -> {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
-                ){
-                    Text("An Error Occured")
-                }
-            }
-            is RuminUiState.Loading -> {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
-                ) {
+        if(verse.text.isEmpty()) {
+            CircularProgressIndicator(
+                strokeCap = StrokeCap.Round,
+                modifier = Modifier.size(96.dp),
+                color = Yellow600,
+                trackColor = Yellow200,
+                strokeWidth = 2.dp
+            )
+        } else {
+//            val displayedVerse = selectedBibleVerse ?: verse.data
 
-                    CircularProgressIndicator(
-                        strokeCap = StrokeCap.Round,
-                        modifier = Modifier.size(96.dp),
-                        color = Yellow600,
-                        trackColor = Yellow200,
-                        strokeWidth = 2.dp
-                    )
+
+            val rawString = verse.text
+
+            val doc = Jsoup.parse(rawString)
+
+            doc.select("span.v, p.s1, p.cl, p.d, p.mr, p.ms1").remove()
+
+            val mainBibleText = doc.select("p")
+                .joinToString(separator = " ") { p->
+                    p.text()
                 }
 
-            }
-            is RuminUiState.Success -> {
-
-                val displayedVerse = selectedBibleVerse ?: verse.data
-
-                val rawString = displayedVerse.verseData.content
-                val doc = Jsoup.parse(rawString)
-
-                doc.select("span.v, p.s1, p.cl, p.d, p.mr, p.ms1").remove()
-
-                val mainBibleText = doc.select("p")
-                    .joinToString(separator = " ") { p->
-                        p.text()
-                    }
-
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxSize()
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
 //                        .statusBarsPadding()
 //                        .padding(horizontal = 16.dp)
-                ) {
-
-
+            ) {
                     VerseOfTheDayCardComponent(
                         bibleVerse = mainBibleText,
-                        bibleText = displayedVerse.verseData.reference,
+                        bibleText = verse.reference,
                         selectCustomVerse = {
                             showBottomSheetState = true
                         },
                         modifier = Modifier
                     )
                 }
-        }
-    }
-
-//    Column(
-//        verticalArrangement = Arrangement.Top,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier
-//    ) {
-//        Box(
-//            contentAlignment = Alignment.Center
-//        ) {
-//            visibleCards.reversed().forEachIndexed { reversedCardIndex, verse ->
-//
-//                key(verse.second) {
-//                    val visualIndex = 1 - reversedCardIndex
-//
-//                    val animatedScale by animateFloatAsState(
-//                        targetValue = 1f - (visualIndex * 0.05f),
-//                        animationSpec = spring(
-//                            dampingRatio = Spring.DampingRatioNoBouncy,
-//                            stiffness = Spring.StiffnessMedium
-//                        ),
-//                        label = "",
-//                    )
-//
-//                    val animatedTranslationY by animateFloatAsState(
-//                        targetValue = visualIndex * 30f,
-//                        animationSpec = spring(
-//                            dampingRatio = Spring.DampingRatioMediumBouncy,
-//                            stiffness = Spring.StiffnessHigh
-//                        ),
-//                        label = ""
-//                    )
-//
-//
-//                    VerseOfTheDayCardComponent(
-//                        bibleVerse = verse.first,
-//                        bibleText = verse.second,
-//                        selectCustomVerse = {
-//                            showBottomSheetState = true
-//                            ruminViewModel.getSuggestedVerses()
-//                        },
-//                        modifier = Modifier
-//                            .graphicsLayer {
-//                                scaleX = animatedScale.coerceIn(0.85f, 1f)
-//                                translationY = animatedTranslationY.coerceAtLeast(10f)
-////                            alpha = 1f - (visualIndex * 0.3f)
-//                            }
-//                            .then(
-//                                if (visualIndex == 0) {
-//                                    Modifier
-//                                        .graphicsLayer {
-//                                            rotationZ = animatedOffsetX.value / 200f
-//                                        }
-//                                        .offset {
-//                                            IntOffset(
-//                                                animatedOffsetX.value.roundToInt(),
-//                                                0
-//                                            )
-//                                        }
-//                                        .pointerInput(Unit) {
-//                                            detectDragGestures(
-//                                                onDrag = { change, dragAmount ->
-//                                                    change.consume()
-//                                                    scope.launch {
-//                                                        animatedOffsetX.snapTo(animatedOffsetX.value + dragAmount.x)
-//                                                    }
-//                                                },
-//                                                onDragEnd = {
-//                                                    scope.launch {
-//
-//                                                        if (abs(animatedOffsetX.value) > 300f) {
-//                                                            verses = verses.drop(1) + verses.take(1)
-//
-////                                                        delay(250)
-//                                                            animatedOffsetX.snapTo(0f)
-////                                                        flingjob.cancel()
-//                                                        } else {
-//                                                            animatedOffsetX.animateTo(0f)
-//                                                        }
-//                                                    }
-//                                                }
-//                                            )
-//                                        }
-//
-//                                } else {
-//                                    Modifier
-//                                }
-//                            )
-//                            .shadow(
-//                                elevation = 30.dp,
-//                                ambientColor = Grey500.copy(0.7f),
-//                                spotColor = Grey500.copy(0.7f)
-//                            )
-//                    )
-//                }
-//            }
-//        }
-        if (showBottomSheetState) {
-            when(suggestedVerse){
-                is RuminUiState.Error -> {
-
-                }
-                RuminUiState.Loading -> {
-
-                }
-                is RuminUiState.Success -> {
-                    SetVerse(
-                        bottomSheetState = bottomSheetState,
-                        showBottomSheetState = false,
-                        onShowBottomSheetStateChanged = {
-                            showBottomSheetState = it
-                        },
-                        verses = suggestedVerse.data,
-                        ruminViewModel = ruminViewModel
-                    )
-                }
             }
-        }
     }
-//}
 
 @Composable
 fun VerseOfTheDayCardComponent(
@@ -323,16 +152,25 @@ fun VerseOfTheDayCardComponent(
 ) {
     Card(
         colors = CardDefaults.cardColors(Color.White),
-        shape = RoundedCornerShape(24.dp),
-        border = BorderStroke(1.dp, Yellow250),
+        shape = RoundedCornerShape(28.dp),
+        border = BorderStroke(1.dp, color = Grey200),
         modifier = modifier
-            .height(500.dp)
+            .height(480.dp)
             .fillMaxWidth()
+            .padding(8.dp)
+            .shadow(
+                20.dp,
+                shape = RoundedCornerShape(10.dp),
+                ambientColor = Grey200,
+                spotColor = Grey400
+            )
     ) {
         Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier
+                .padding(32.dp)
+                .fillMaxHeight()
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -340,15 +178,15 @@ fun VerseOfTheDayCardComponent(
             ) {
 
                 Surface(
-                    color = Yellow600.copy(alpha = 0.3f),
+                    color = Yellow500.copy(0.2f),
                     shape = RoundedCornerShape(100)
                 ) {
                     Text(
                         text = "VERSE OF THE DAY",
                         color = Yellow600,
-                        fontSize = 12.sp,
-                        letterSpacing = 1.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 3.sp,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
                     )
                 }
@@ -356,41 +194,39 @@ fun VerseOfTheDayCardComponent(
 
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
             ) {
                 Text(
-                    text = "\"" + bibleVerse + "\"",
+                    text = bibleVerse,
                     style = MaterialTheme.typography.titleLarge,
                     color = Black,
-                    fontSize = 24.sp,
-                    lineHeight = 34.sp,
-                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
                 )
             }
 
-
             Text(
                 text = bibleText,
-                style = MaterialTheme.typography.bodySmall,
-                color = Grey500,
-                fontSize = 18.sp,
-                letterSpacing = -(0.1).sp,
-                fontWeight = FontWeight.SemiBold,
+                color = Yellow500,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             HorizontalDivider(thickness = 1.dp, color = Grey200)
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+
+                Text(
+                    text = "swipe to see previous days",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Grey400,
+                    modifier = Modifier.weight(1f)
+                )
+
+
                 IconButton(
                     onClick = { /*TODO*/ },
                     colors = IconButtonDefaults.iconButtonColors(Grey100),
@@ -400,7 +236,6 @@ fun VerseOfTheDayCardComponent(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         )
-//                        .border(1.dp, Yellow250, CircleShape)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.favorite),
@@ -409,17 +244,6 @@ fun VerseOfTheDayCardComponent(
                         modifier = Modifier
                     )
                 }
-
-                Text(
-                    text = "swipe to select another verse",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Grey400,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
-                )
-
                 IconButton(
                     onClick = {
                         selectCustomVerse()
@@ -431,7 +255,6 @@ fun VerseOfTheDayCardComponent(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         )
-//                        .border(1.dp, Yellow250, CircleShape)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.add),
@@ -440,29 +263,41 @@ fun VerseOfTheDayCardComponent(
                         modifier = Modifier.size(24.dp)
                     )
                 }
+
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenTopAppBar() {
+
+    var todayDate by remember{
+        mutableStateOf(LocalDate.now())
+    }
+
+    val formatter = DateTimeFormatter.ofPattern("E, MMM d", Locale.getDefault())
+
+    val formattedDate = todayDate.format(formatter)
+
     TopAppBar(
         title = {
             Column(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top,
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
             ) {
                 Text(
-                    text = "Monday 26th, 2026",
-                    fontSize = 14.sp,
+                    text = formattedDate,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Grey500
                 )
                 Text(
                     text = "Good morning, Emmanuel",
-                    fontSize = 18.sp,
+                    fontSize = 22.sp,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -471,24 +306,30 @@ fun HomeScreenTopAppBar() {
         actions = {
             Surface(
                 shape = RoundedCornerShape(100),
-                color = Yellow500,
-                border = BorderStroke(1.dp, Yellow600),
-                modifier = Modifier.padding(end = 16.dp)
+                color = Color.White,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .shadow(
+                        12.dp,
+                        shape = RoundedCornerShape(100),
+                        ambientColor = Grey200,
+                        spotColor = Grey200
+                    )
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
                 ) {
-                    Icon(
+                    Image(
                         imageVector = ImageVector.vectorResource(id = R.drawable.streak),
                         contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = "12 Days",
-                        fontSize = 14.sp,
-                        color = Color.White
+                        text = "12 days",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.Black
                     )
                 }
             }
