@@ -12,17 +12,16 @@ val Pink40 = Color(0xFF7D5260)
 
 
 //custom colors
+val Yellow600 = Color(0xFFC48005)
+val Yellow500 = Color(0xFFDDAF2D)
+val Yellow300 = Color(0xFFFFEC61)
+val Yellow200 = Color(0xFFFFFDF1)
+val Yellow100 = Color(0xFFF9F8F3)
 
-val Sage = Color(0xFF7C8A6B)
+val StrokeYellow = Color(0xFFBD992B).copy(alpha = 0.3f)
+val StrokeGrey = Color(0xFF000000).copy(alpha = 0.08f)
 
-val Yellow600 = Color(0xFFA2770A)
-val Yellow500 = Color(0xFFE2A710)
-val Yellow300 = Color(0xFFFEF3E2)
-val Yellow250 = Color(0xFFE9E4D5)
-val Yellow200 = Color(0xFFFAF7F0)
-
-val Grey500 = Color(0xFF6E6A60)
-val Grey400 = Color(0xFFA6A096)
+val Grey400 = Color(0xFF000000).copy(alpha = 0.4f)
 val Grey200 = Color(0xFFEBE9E6)
 val Grey100 = Color(0xFFFAF7F0)
 val Black = Color(0xFF1A1A18)

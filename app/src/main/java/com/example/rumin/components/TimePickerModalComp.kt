@@ -2,9 +2,7 @@ package com.example.rumin.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,27 +23,20 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.example.rumin.R
 import com.example.rumin.ui.theme.Black
 import com.example.rumin.ui.theme.Grey200
 import com.example.rumin.ui.theme.Grey400
-import com.example.rumin.ui.theme.Grey500
 import com.example.rumin.ui.theme.Yellow200
-import com.example.rumin.ui.theme.Yellow250
 import com.example.rumin.ui.theme.Yellow600
 import java.time.LocalTime
-import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +64,7 @@ fun TimePickerModalComp(
         ) {
             Text(
                 text = "We'll send you a gentle nudge, at this time everyday",
-                color = Grey500,
+//                color = Grey500,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
             )
@@ -82,7 +73,7 @@ fun TimePickerModalComp(
                 colorScheme = MaterialTheme.colorScheme.copy(
                     outline = Grey400,
                     primary = Yellow600,
-                    onSurfaceVariant = Grey500
+//                    onSurfaceVariant = Grey500
                 ),
                 typography = MaterialTheme.typography.copy(
                     displayMedium = MaterialTheme.typography.displayMedium,
@@ -94,7 +85,7 @@ fun TimePickerModalComp(
                     state = timePickerState,
                     colors = TimePickerDefaults.colors(
                         selectorColor = Yellow600,
-                        periodSelectorBorderColor = Yellow250,
+//                        periodSelectorBorderColor = Yellow250,
                         periodSelectorSelectedContainerColor = Color.White,
                         periodSelectorUnselectedContainerColor = Grey200,
                         periodSelectorSelectedContentColor = Black,
@@ -107,7 +98,7 @@ fun TimePickerModalComp(
                     modifier = Modifier.clickable(
                         interactionSource = null,
                         indication = null
-                    ){}
+                    ) {}
                 )
             }
         }

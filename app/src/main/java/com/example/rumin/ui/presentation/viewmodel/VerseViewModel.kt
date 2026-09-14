@@ -19,8 +19,7 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class VerseViewModel @Inject constructor(
-    private val verseRepository: VerseRepository,
-    private val verseApiService: VerseApiService
+    private val verseRepository: VerseRepository
 ) : ViewModel() {
 
 //    private var _suggestedVerses = MutableStateFlow<NetworkResponse<List<Verse>>>(NetworkResponse.Loading)
@@ -28,15 +27,19 @@ class VerseViewModel @Inject constructor(
 //
 //    private var _selectedVerse = MutableStateFlow<Verse?>(null)
 //    val selectedVerse = _selectedVerse.asStateFlow()
-//
-//    private var _isSearching = MutableStateFlow(false)
-//    val isSearching = _isSearching.asStateFlow()
 
     val verseOfTheDay = verseRepository.getVerseOfTheDay()
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             initialValue = VerseUiModel("", "", LocalDate.now())
+        )
+
+    val pastVerses = verseRepository.getAllVerses()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
         )
 
     init {

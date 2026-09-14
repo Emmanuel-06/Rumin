@@ -6,6 +6,8 @@ import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -32,6 +34,7 @@ import com.example.rumin.ui.theme.Black
 import com.example.rumin.ui.theme.Grey100
 import com.example.rumin.ui.theme.Grey200
 import com.example.rumin.ui.theme.Grey400
+import com.example.rumin.ui.theme.Yellow100
 import com.example.rumin.ui.theme.Yellow200
 
 
@@ -39,34 +42,24 @@ import com.example.rumin.ui.theme.Yellow200
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
-    navController: NavController,
-    verseViewModel: VerseViewModel
+    verseViewModel: VerseViewModel,
 ) {
     var selected by remember { mutableStateOf(0) }
 
+    var scrollState = rememberScrollState()
+
     Scaffold(
         topBar = {
-            when(selected){
-                0 -> HomeScreenTopAppBar()
-                1 -> ReminderTopAppBar()
-                2 -> ProfileScreenTopAppBar()
+            when (selected) {
+                0 -> HomeTopAppBar()
+//                1 -> ReminderTopAppBar()
+//                2 -> ProfileScreenTopAppBar()
             }
         },
         bottomBar = {
             NavigationBar(
-                modifier = Modifier
-                    .drawWithContent {
-                        drawContent()
-                        val strokeWidth = 1.dp.toPx()
-
-                        drawLine(
-                            color = Grey200,
-                            start = Offset(0f, 0f),
-                            end = Offset(size.width, 0f),
-                            strokeWidth = strokeWidth
-                        )
-                    },
-                containerColor = Grey100,
+                modifier = Modifier,
+                containerColor = Yellow100,
             ) {
                 navbarItems.forEachIndexed { index, navbarItems ->
                     val isSelected = selected == index
@@ -78,7 +71,10 @@ fun MainScreen(
                         },
                         icon = {
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = navbarItems.icon),
+                                imageVector = if (isSelected)
+                                    ImageVector.vectorResource(id = navbarItems.selectedIcon)
+                                else
+                                    ImageVector.vectorResource(id = navbarItems.unselectedIcon),
                                 contentDescription = "Nav bar icon",
                                 tint = if (isSelected) Black else Grey400,
                                 modifier = Modifier
@@ -95,17 +91,18 @@ fun MainScreen(
                                 color = if (isSelected) Black else Grey400
                             )
                         },
-                        modifier = Modifier
+                        modifier = Modifier.padding(top = 6.dp)
                     )
                 }
             }
         },
-        containerColor = Yellow200,
-    ) {
+        containerColor = Yellow100,
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(it)
-                .padding(horizontal = 20.dp, vertical = 24.dp)
+                .padding(innerPadding)
+                .padding(horizontal = 21.dp)
+                .verticalScroll(scrollState)
         ) {
             ScreenContainer(
                 index = selected,
@@ -120,11 +117,11 @@ fun MainScreen(
 @Composable
 fun ScreenContainer(
     index: Int,
-    viewModel: VerseViewModel
+    viewModel: VerseViewModel,
 ) {
-    when(index){
-        0 -> HomeScreen(viewModel)
-        1 -> RemindersScreen()
-        2 -> ProfileScreen()
+    when (index) {
+        0 -> Home(viewModel)
+//        1 -> RemindersScreen()
+//        2 -> ProfileScreen()
     }
 }

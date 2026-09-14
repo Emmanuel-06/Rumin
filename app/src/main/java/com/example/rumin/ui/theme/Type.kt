@@ -15,6 +15,11 @@ val sfRoundedFontFamily = FontFamily(
     Font(R.font.sf_pro_rounded_semibold, FontWeight.SemiBold),
 )
 
+val bogueFontFamily = FontFamily(
+    Font(R.font.bogue_reg, FontWeight.Normal),
+)
+
+
 
 val CustomTypography = Typography(
     bodyLarge = TextStyle(

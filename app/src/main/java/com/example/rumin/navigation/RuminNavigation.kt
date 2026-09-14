@@ -29,7 +29,6 @@ fun RuminNavigation() {
             route = Screens.MAIN.name
         ) {
             MainScreen(
-                navController = navController,
                 verseViewModel = viewModel
             )
         }

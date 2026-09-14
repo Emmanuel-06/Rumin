@@ -4,11 +4,12 @@ import com.example.rumin.R
 
 data class Navbar(
     val title: String,
-    val icon: Int,
+    val selectedIcon: Int,
+    val unselectedIcon: Int
 )
 
 val navbarItems = listOf(
-    Navbar(title = "Home", icon = R.drawable.home),
-    Navbar(title = "Reminders", icon = R.drawable.reminder),
-    Navbar(title = "Profile", icon = R.drawable.profile)
+    Navbar(title = "Home", selectedIcon = R.drawable.home_fill, unselectedIcon = R.drawable.home_outline),
+    Navbar(title = "Reminders", selectedIcon = R.drawable.clock_filled, unselectedIcon = R.drawable.clock_outline),
+    Navbar(title = "Profile", selectedIcon = R.drawable.profile_filled, unselectedIcon = R.drawable.profile_outline)
 )

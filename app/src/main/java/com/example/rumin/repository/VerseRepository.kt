@@ -34,12 +34,22 @@ class VerseRepository @Inject constructor(
     val tomorrowsDate: LocalDate
         get() = LocalDate.now().plusDays(1)
 
-    //call to the Dao class and mapping the Room Database response to our Ui Model class
+    //call to the Dao class for a single verse and mapping the response from ROOM to our Ui Model class
     fun getVerseOfTheDay(): Flow<VerseUiModel> {
         return verseDao.getVerseOfTheDay(currentDate)
             .map { verse ->
                 Log.d("CHECK_OBSERVE", "${verse?.toVerseModel()}")
                 verse?.toVerseModel() ?: VerseUiModel("", "", currentDate)
+            }
+    }
+
+    //call to the Dao class for list of verses for past days and mapping the response from ROOM to our Ui Model class
+    fun getAllVerses(): Flow<List<VerseUiModel>>{
+        return verseDao.getAllVerses()
+            .map { verses ->
+                verses.map {
+                    it?.toVerseModel() ?: VerseUiModel("", "", currentDate)
+                }
             }
     }
 
