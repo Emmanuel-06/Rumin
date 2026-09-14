@@ -41,6 +41,7 @@ fun VerseCard(
     bibleVerse: String,
     bibleReference: String,
     day: LocalDate,
+    onClick: (String, String, String) -> Unit
 ) {
     val formatter = DateTimeFormatter.ofPattern("EEE, d MMMM")
     val formattedDate = day.format(formatter)
@@ -54,8 +55,10 @@ fun VerseCard(
             shape = RoundedCornerShape(16.dp),
             clip = true,
             spotColor = Color.Black.copy(0.1f)
-        )
-
+        ),
+        onClick = {
+            onClick(getExtractedVerse(bibleVerse), bibleReference.uppercase(), formattedDate)
+        }
     ) {
 
         Column(
@@ -94,8 +97,6 @@ fun VerseCard(
                     color = Grey400
                 )
             }
-
-
 
             Text(
                 text = getExtractedVerse(bibleVerse),

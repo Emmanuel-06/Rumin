@@ -9,29 +9,33 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -40,7 +44,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,8 +63,8 @@ import com.example.rumin.ui.theme.Yellow500
 import com.example.rumin.ui.theme.Yellow600
 import com.example.rumin.ui.theme.bogueFontFamily
 import com.example.rumin.ui.theme.sfRoundedFontFamily
+import com.example.rumin.utils.FormattedDate
 import com.example.rumin.utils.getExtractedVerse
-import org.jsoup.Jsoup
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -69,9 +75,18 @@ fun Home(
     verseViewModel: VerseViewModel,
 ) {
     val verse = verseViewModel.verseOfTheDay.collectAsState().value
-
     val pastVerses = verseViewModel.pastVerses.collectAsState().value
 
+    var showCompleteVerseBottomSheet by remember{
+        mutableStateOf(false)
+    }
+
+    var completeVerse by remember{
+        mutableStateOf(" " to " ")
+    }
+    var completeVerseDay by remember {
+        mutableStateOf("")
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(vertical = 24.dp)
@@ -97,9 +112,25 @@ fun Home(
                     VerseCard(
                         bibleVerse = verse.text,
                         bibleReference = verse.reference,
-                        day = verse.date
+                        day = verse.date,
+                        onClick = { bibleVerse, bibleReference, day ->
+                            showCompleteVerseBottomSheet = true
+                            completeVerse = bibleVerse to bibleReference
+                            completeVerseDay = day
+                        }
                     )
                 }
+            }
+
+            if(showCompleteVerseBottomSheet){
+                CompleteVerseBottomSheet(
+                    day = completeVerseDay,
+                    bibleVerse = completeVerse.first,
+                    bibleReference = completeVerse.second,
+                    onShowCompleteVerseBottomSheetChanged = {
+                        showCompleteVerseBottomSheet = false
+                    }
+                )
             }
         }
     }
@@ -265,6 +296,9 @@ fun VerseOfTheDayCard(
                         fontFamily = bogueFontFamily,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            lineBreak = LineBreak.Heading
+                        ),
                         lineHeight = 1.6.em
                     )
                 }
@@ -325,6 +359,87 @@ fun SectionLabel(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CompleteVerseBottomSheet(
+    day: String,
+    bibleVerse: String,
+    bibleReference: String,
+    onShowCompleteVerseBottomSheetChanged: () -> Unit
+) {
+
+    var sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    ModalBottomSheet(
+        onDismissRequest = {
+            onShowCompleteVerseBottomSheetChanged()
+        },
+        sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        containerColor = Yellow100,
+        scrimColor = Color.Black.copy(0.4f),
+
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.padding(horizontal = 21.dp, vertical = 21.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = day,
+                    fontSize = 24.sp,
+                    fontFamily = sfRoundedFontFamily,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(Color.Black),
+                modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically, unbounded = true)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(48.dp)
+                ) {
+                    Text(
+                        text = bibleReference.uppercase(),
+                        fontSize = 16.sp,
+                        fontFamily = sfRoundedFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = bibleVerse,
+                        fontSize = 24.sp,
+                        fontFamily = bogueFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            lineBreak = LineBreak.Heading
+                        ),
+                        lineHeight = 1.6.em
+                    )
+                }
+            }
+        }
+
+    }
+}
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable

@@ -15,7 +15,7 @@ interface VerseDao {
     @Query("SELECT * FROM verse_of_the_day WHERE date =:date LIMIT 1")
     fun getVerseOfTheDay(date: LocalDate): Flow<VerseEntity?>
 
-    @Query("SELECT * FROM verse_of_the_day ORDER BY date DESC LIMIT 5")
+    @Query("SELECT * FROM verse_of_the_day ORDER BY date DESC LIMIT 7")
     fun getAllVerses(): Flow<List<VerseEntity?>>
 
     @Query("SELECT EXISTS (SELECT 1 FROM verse_of_the_day WHERE date = :today)")
