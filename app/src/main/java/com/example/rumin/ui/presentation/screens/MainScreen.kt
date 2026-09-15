@@ -43,6 +43,7 @@ import com.example.rumin.ui.theme.Yellow200
 @Composable
 fun MainScreen(
     verseViewModel: VerseViewModel,
+    navController: () -> Unit
 ) {
     var selected by remember { mutableStateOf(0) }
 
@@ -106,7 +107,8 @@ fun MainScreen(
         ) {
             ScreenContainer(
                 index = selected,
-                viewModel = verseViewModel
+                viewModel = verseViewModel,
+                navigateToPastVersesList = navController
             )
         }
     }
@@ -118,9 +120,13 @@ fun MainScreen(
 fun ScreenContainer(
     index: Int,
     viewModel: VerseViewModel,
+    navigateToPastVersesList: () -> Unit
 ) {
     when (index) {
-        0 -> Home(viewModel)
+        0 -> Home(
+            viewModel,
+            navigateToPastVersesList
+        )
 //        1 -> RemindersScreen()
 //        2 -> ProfileScreen()
     }

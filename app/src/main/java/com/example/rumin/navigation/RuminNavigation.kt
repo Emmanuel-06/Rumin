@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.rumin.ui.presentation.screens.MainScreen
+import com.example.rumin.ui.presentation.screens.PastVersesList
 import com.example.rumin.ui.presentation.viewmodel.VerseViewModel
 import com.example.rumin.utils.Screens
 
@@ -29,8 +30,21 @@ fun RuminNavigation() {
             route = Screens.MAIN.name
         ) {
             MainScreen(
-                verseViewModel = viewModel
+                verseViewModel = viewModel,
+                navController = { navController.navigate(Screens.PAST_VERSES_LIST.name) }
+
             )
+        }
+
+
+        composable (
+            route = Screens.PAST_VERSES_LIST.name
+        ){
+            PastVersesList(
+                verseViewModel = viewModel
+            ) {
+                navController.popBackStack()
+            }
         }
     }
 }

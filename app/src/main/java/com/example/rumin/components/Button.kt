@@ -32,10 +32,10 @@ fun PrimaryButton(
     Button(
         onClick = { /*TODO*/ },
         colors = ButtonDefaults.buttonColors(Color.White),
-        modifier = modifier.size(width = 180.dp, height = 48.dp).shadow( 24.dp,
+        modifier = modifier.size(width = 180.dp, height = 48.dp).shadow( elevation = 60.dp,
             shape = RoundedCornerShape(100),
             clip = true,
-            spotColor = Color.Black.copy(0.3f))
+            spotColor = Color.Black.copy(0.1f))
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = icon),

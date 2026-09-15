@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun FormattedDate(day: LocalDate): String {
+fun getFormattedDate(day: LocalDate): String {
     val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM")
 
     return day.format(formatter)

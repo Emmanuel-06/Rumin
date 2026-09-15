@@ -2,6 +2,7 @@ package com.example.rumin.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.rumin.R
 import com.example.rumin.ui.theme.Grey400
+import com.example.rumin.ui.theme.StrokeGrey
 import com.example.rumin.ui.theme.bogueFontFamily
 import com.example.rumin.ui.theme.sfRoundedFontFamily
 import com.example.rumin.utils.getExtractedVerse
@@ -40,16 +42,14 @@ import java.time.format.DateTimeFormatter
 fun VerseCard(
     bibleVerse: String,
     bibleReference: String,
-    day: LocalDate,
+    day: String,
     onClick: (String, String, String) -> Unit
 ) {
-    val formatter = DateTimeFormatter.ofPattern("EEE, d MMMM")
-    val formattedDate = day.format(formatter)
-
 
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(Color.White),
+//        border = BorderStroke(width = 0.5.dp, color = StrokeGrey),
         modifier = Modifier.shadow(
             elevation = 40.dp,
             shape = RoundedCornerShape(16.dp),
@@ -57,7 +57,7 @@ fun VerseCard(
             spotColor = Color.Black.copy(0.1f)
         ),
         onClick = {
-            onClick(getExtractedVerse(bibleVerse), bibleReference.uppercase(), formattedDate)
+            onClick(getExtractedVerse(bibleVerse), bibleReference.uppercase(), day)
         }
     ) {
 
@@ -90,7 +90,7 @@ fun VerseCard(
                 }
 
                 Text(
-                    text = formattedDate,
+                    text = day,
                     fontFamily = sfRoundedFontFamily,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 12.sp,

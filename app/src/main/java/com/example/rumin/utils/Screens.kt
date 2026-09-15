@@ -2,6 +2,6 @@ package com.example.rumin.utils
 
 enum class Screens {
     MAIN,
-    REMINDERS,
+    PAST_VERSES_LIST,
     PROFILE
 }

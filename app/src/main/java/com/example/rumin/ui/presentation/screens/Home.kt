@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -53,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.rumin.R
+import com.example.rumin.components.CompleteVerseBottomSheet
 import com.example.rumin.components.PrimaryButton
 import com.example.rumin.components.VerseCard
 import com.example.rumin.ui.presentation.viewmodel.VerseViewModel
@@ -63,7 +63,7 @@ import com.example.rumin.ui.theme.Yellow500
 import com.example.rumin.ui.theme.Yellow600
 import com.example.rumin.ui.theme.bogueFontFamily
 import com.example.rumin.ui.theme.sfRoundedFontFamily
-import com.example.rumin.utils.FormattedDate
+import com.example.rumin.utils.getFormattedDate
 import com.example.rumin.utils.getExtractedVerse
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -73,6 +73,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun Home(
     verseViewModel: VerseViewModel,
+    navigateToPastVersesList: () -> Unit
 ) {
     val verse = verseViewModel.verseOfTheDay.collectAsState().value
     val pastVerses = verseViewModel.pastVerses.collectAsState().value
@@ -102,7 +103,9 @@ fun Home(
             Spacer(modifier = Modifier.height(32.dp))
             ActionButtons()
             Spacer(modifier = Modifier.height(32.dp))
-            SectionLabel()
+            SectionLabel(
+                onClick = navigateToPastVersesList
+            )
             Spacer(modifier = Modifier.height(8.dp))
 
             Column(
@@ -112,7 +115,7 @@ fun Home(
                     VerseCard(
                         bibleVerse = verse.text,
                         bibleReference = verse.reference,
-                        day = verse.date,
+                        day = getFormattedDate(verse.date),
                         onClick = { bibleVerse, bibleReference, day ->
                             showCompleteVerseBottomSheet = true
                             completeVerse = bibleVerse to bibleReference
@@ -180,7 +183,7 @@ fun HomeTopAppBar() {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .shadow(
-                            24.dp,
+                            70.dp,
                             shape = RoundedCornerShape(100),
                             clip = true,
                             spotColor = Color.Black.copy(0.04f)
@@ -350,7 +353,7 @@ fun SectionLabel(
         ) {
             Text(
                 text = "See all",
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 fontFamily = sfRoundedFontFamily,
                 fontWeight = FontWeight.Medium,
                 color = Grey400
@@ -359,87 +362,6 @@ fun SectionLabel(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CompleteVerseBottomSheet(
-    day: String,
-    bibleVerse: String,
-    bibleReference: String,
-    onShowCompleteVerseBottomSheetChanged: () -> Unit
-) {
-
-    var sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
-    ModalBottomSheet(
-        onDismissRequest = {
-            onShowCompleteVerseBottomSheetChanged()
-        },
-        sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-        containerColor = Yellow100,
-        scrimColor = Color.Black.copy(0.4f),
-
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier.padding(horizontal = 21.dp, vertical = 21.dp)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = day,
-                    fontSize = 24.sp,
-                    fontFamily = sfRoundedFontFamily,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(Color.Black),
-                modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically, unbounded = true)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(48.dp)
-                ) {
-                    Text(
-                        text = bibleReference.uppercase(),
-                        fontSize = 16.sp,
-                        fontFamily = sfRoundedFontFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = bibleVerse,
-                        fontSize = 24.sp,
-                        fontFamily = bogueFontFamily,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        style = TextStyle(
-                            lineBreak = LineBreak.Heading
-                        ),
-                        lineHeight = 1.6.em
-                    )
-                }
-            }
-        }
-
-    }
-}
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
