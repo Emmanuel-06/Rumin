@@ -1,6 +1,7 @@
 package com.example.rumin.components
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,41 @@ import com.example.rumin.ui.theme.sfRoundedFontFamily
 
 @Composable
 fun PrimaryButton(
+    icon: Int?,
+    label: String,
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
+
+    Button(
+        onClick = { onClick() },
+        colors = ButtonDefaults.buttonColors(Color.Black),
+        modifier = modifier.height(48.dp)
+    ) {
+        icon?.let { ImageVector.vectorResource(id = it) }?.let {
+            Icon(
+                imageVector = it,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = label,
+            fontFamily = sfRoundedFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            color = Color.White,
+        )
+    }
+}
+
+
+@Composable
+fun SecondaryButton(
     icon: Int,
     label: String,
     onClick: () -> Unit = {},
@@ -61,5 +97,5 @@ fun PrimaryButton(
 @Preview
 @Composable
 fun PrimaryButtonPreview() {
-    PrimaryButton(icon = R.drawable.favourite, label = "Favorite")
+    SecondaryButton(icon = R.drawable.favourite, label = "Favorite")
 }

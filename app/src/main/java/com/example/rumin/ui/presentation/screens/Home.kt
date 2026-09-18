@@ -23,12 +23,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,7 +51,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.rumin.R
 import com.example.rumin.components.CompleteVerseBottomSheet
-import com.example.rumin.components.PrimaryButton
+import com.example.rumin.components.SecondaryButton
 import com.example.rumin.components.VerseCard
 import com.example.rumin.ui.presentation.viewmodel.VerseViewModel
 import com.example.rumin.ui.theme.Grey400
@@ -183,7 +181,7 @@ fun HomeTopAppBar() {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .shadow(
-                            70.dp,
+                            50.dp,
                             shape = RoundedCornerShape(100),
                             clip = true,
                             spotColor = Color.Black.copy(0.04f)
@@ -192,23 +190,21 @@ fun HomeTopAppBar() {
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.fire_fill),
                             contentDescription = null,
                             tint = Yellow500,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(20.dp)
                         )
-
-                        Spacer(modifier = Modifier.width(4.dp))
 
                         Text(
                             text = "6",
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                             fontFamily = sfRoundedFontFamily,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.SemiBold
                         )
 
                     }
@@ -319,12 +315,12 @@ fun ActionButtons() {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        PrimaryButton(
+        SecondaryButton(
             icon = R.drawable.favourite,
             label = "Favorite"
         )
 
-        PrimaryButton(
+        SecondaryButton(
             icon = R.drawable.pencil_edit,
             label = "Change Verse"
         )
