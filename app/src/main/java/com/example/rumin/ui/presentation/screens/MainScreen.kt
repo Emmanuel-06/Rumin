@@ -53,7 +53,7 @@ fun MainScreen(
         topBar = {
             when (selected) {
                 0 -> HomeTopAppBar()
-//                1 -> ReminderTopAppBar()
+                1 -> RemindersTopAppBar()
 //                2 -> ProfileScreenTopAppBar()
             }
         },
@@ -127,7 +127,7 @@ fun ScreenContainer(
             viewModel,
             navigateToPastVersesList
         )
-//        1 -> RemindersScreen()
+        1 -> Reminders()
 //        2 -> ProfileScreen()
     }
 }
