@@ -61,6 +61,7 @@ import com.example.rumin.ui.theme.Yellow500
 import com.example.rumin.ui.theme.Yellow600
 import com.example.rumin.ui.theme.bogueFontFamily
 import com.example.rumin.ui.theme.sfRoundedFontFamily
+import com.example.rumin.utils.ShimmerHomeScreen
 import com.example.rumin.utils.getFormattedDate
 import com.example.rumin.utils.getExtractedVerse
 import java.time.LocalDate
@@ -90,8 +91,10 @@ fun Home(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(vertical = 24.dp)
     ) {
+
         if (verse.text.isEmpty()) {
-            CircularProgressIndicator(color = Yellow600, strokeCap = StrokeCap.Round)
+//            CircularProgressIndicator(color = Yellow600, strokeCap = StrokeCap.Round)
+            ShimmerHomeScreen()
         } else {
             VerseOfTheDayCard(
                 bibleReference = verse.reference,
@@ -238,7 +241,7 @@ fun VerseOfTheDayCard(
     )
 
     Card(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent
         ),

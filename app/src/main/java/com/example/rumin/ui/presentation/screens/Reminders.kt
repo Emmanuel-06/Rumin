@@ -34,11 +34,7 @@ import com.example.rumin.ui.theme.sfRoundedFontFamily
 fun Reminders() {
 
     var listOfReminders = remember {
-        mutableListOf<Pair<String, String>>(
-            "9:00" to "AM",
-            "12:00" to "PM",
-            "12:00" to "PM"
-        )
+        mutableListOf<Pair<String, String>>()
     }
 
     var showTimePickerDialog by remember {
@@ -52,7 +48,11 @@ fun Reminders() {
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
-            text = "You have " + listOfReminders.size + " reminders set",
+            text = if (listOfReminders.size > 1) {
+                "You have " + listOfReminders.size + " reminders set"
+            } else {
+                "You have " + listOfReminders.size + " reminder set"
+            },
             fontSize = 24.sp,
             fontFamily = sfRoundedFontFamily,
             fontWeight = FontWeight.Normal,
@@ -60,8 +60,8 @@ fun Reminders() {
         )
 
         listOfReminders.forEach {
-            RemindersCard (
-                time = it.first ,
+            RemindersCard(
+                time = it.first,
                 periodOfDay = it.second,
                 onDelete = {}
             )
@@ -77,11 +77,11 @@ fun Reminders() {
         )
     }
 
-    if (showTimePickerDialog){
+    if (showTimePickerDialog) {
         TimePickerModal(
             onConfirm = { timePickerState ->
 
-                val period = if(timePickerState.hour >= 12) "PM" else "AM"
+                val period = if (timePickerState.hour >= 12) "PM" else "AM"
 
                 listOfReminders.add(
                     timePickerState.hour.toString() + ":" + timePickerState.minute.toString() to period
@@ -106,7 +106,7 @@ fun RemindersTopAppBar() {
                 fontFamily = sfRoundedFontFamily,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Black
-                )
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(Color.Transparent)
     )
@@ -115,6 +115,6 @@ fun RemindersTopAppBar() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
-fun Preview(){
+fun Preview() {
     Reminders()
 }
